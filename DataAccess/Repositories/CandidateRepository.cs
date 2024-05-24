@@ -20,24 +20,34 @@ namespace DataAccess.Repositories
 
         public async Task<Candidate> CreateCandidate(Candidate candidate)
         {
-            const string sql = @"
-        INSERT INTO Candidates 
-        (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment, DateCreated, LastUpdated)
-        VALUES 
-        (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment, @DateCreated, @LastUpdated);
-        SELECT LAST_INSERT_ROWID();";
 
-            
-            candidate.DateCreated = DateTime.UtcNow;
-            candidate.LastUpdated = DateTime.UtcNow;
+            const string selectSql = "SELECT * FROM Candidates WHERE Email = @Email";
+            const string insertSql = @"
+        INSERT INTO Candidates 
+        (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment, DateCreated)
+        VALUES 
+        (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment, @DateCreated);";
 
             using (var connection = _dbConnectionProvider.CreateConnection())
             {
-                var candidateId = await connection.QueryFirstOrDefaultAsync<int>(sql, candidate);
-                candidate.Id = candidateId;
-                return candidate;
+                
+                var existingCandidate = await connection.QueryFirstOrDefaultAsync<Candidate>(selectSql, new { Email = candidate.Email });
+
+                if (existingCandidate != null)
+                {
+                   
+                    return await UpdateCandidate(candidate, existingCandidate.Id);
+                }
+                else
+                {
+                   
+                    candidate.DateCreated = DateTime.UtcNow;
+                    await connection.ExecuteAsync(insertSql, candidate);
+                    return candidate;
+                }
             }
         }
+
 
 
         public async Task DeleteCandidate(int id)
@@ -83,13 +93,14 @@ namespace DataAccess.Repositories
             PreferredCallTime = @PreferredCallTime, 
             LinkedInProfileUrl = @LinkedInProfileUrl, 
             GitHubProfileUrl = @GitHubProfileUrl, 
-            FreeTextComment = @FreeTextComment
+            FreeTextComment = @FreeTextComment,
+            LastUpdated   = @LastUpdated
         WHERE Id = @Id";
 
            
             candidate.Id = id;
+            candidate.LastUpdated = DateTime.UtcNow;
 
-            
             using (var connection = _dbConnectionProvider.CreateConnection())
             {
                 await connection.ExecuteAsync(sql, candidate);
