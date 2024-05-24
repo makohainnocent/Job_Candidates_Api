@@ -1,4 +1,5 @@
-﻿using Application.Abstractions;
+﻿using Api.Abstractions;
+using Application.Abstractions;
 using DataAccess.DbConnection;
 using DataAccess.Repositories;
 
@@ -14,6 +15,21 @@ namespace Api.Extensions
 
             builder.Services.AddSingleton<IDbConnectionProvider, DbConnection>();
             builder.Services.AddTransient<ICandidateRepository, CandidateRepository>();
+        }
+
+        public static void RegisterEndpointdefinitions(this WebApplication app)
+        {
+            var endpointdefs = typeof(Program).Assembly
+                .GetTypes()
+                .Where(t => typeof(IEndpointDefinition).IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
+
+                .Select(Activator.CreateInstance)
+                .Cast<IEndpointDefinition>();
+
+            foreach(var endpoints in endpointdefs)
+            {
+                endpoints.RegisterEndpoints(app);
+            }
         }
     }
 }
