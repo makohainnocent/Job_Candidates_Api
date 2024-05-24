@@ -22,7 +22,6 @@ namespace Api.Extensions
             var endpointdefs = typeof(Program).Assembly
                 .GetTypes()
                 .Where(t => typeof(IEndpointDefinition).IsAssignableFrom(t) && !t.IsAbstract && !t.IsInterface)
-
                 .Select(Activator.CreateInstance)
                 .Cast<IEndpointDefinition>();
 
