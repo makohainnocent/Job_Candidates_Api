@@ -5,24 +5,37 @@ using Microsoft.AspNetCore.Builder;
 
 namespace Api.EndPointDefinitions
 {
-    public class CandidateEndpointDefinition : IEndpointDefinition
-    {
-        public void RegisterEndpoints(WebApplication app)
-        {
-            var candidateGroup = app.MapGroup("/api/candidates");
+    using Application.Abstractions;
+    using Domain.Models;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
+    using System.Threading.Tasks;
 
-            candidateGroup.MapGet("/{id}", async (ICandidateRepository candidateRepository, int id) =>
+    namespace Api.EndPointDefinitions
+    {
+        public class CandidateEndpointDefinition : IEndpointDefinition
+        {
+            public void RegisterEndpoints(WebApplication app)
+            {
+                var candidateGroup = app.MapGroup("/api/candidates");
+
+                candidateGroup.MapGet("/{id}", GetCandidateById).WithName("GetCandidateById");
+                candidateGroup.MapPost("/", CreateCandidate);
+            }
+
+            private  async Task<IResult> GetCandidateById(ICandidateRepository candidateRepository, int id)
             {
                 var candidate = await candidateRepository.GetCandidate(id);
-                return candidate is not null ? Results.Ok(candidate) : Results.NotFound();
-            }).WithName("GetCandidateById");
+                return candidate is not null ? TypedResults.Ok(candidate) : Results.NotFound();
+            }
 
-            candidateGroup.MapPost("/", async (ICandidateRepository candidateRepository, Candidate candidate) =>
+            private  async Task<IResult> CreateCandidate(ICandidateRepository candidateRepository, Candidate candidate)
             {
                 var createdCandidate = await candidateRepository.CreateCandidate(candidate);
                 return Results.CreatedAtRoute("GetCandidateById", new { id = createdCandidate.Id }, createdCandidate);
-            });
+            }
         }
     }
+
 }
 
