@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Application.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -6,11 +6,12 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Abstractions;
+using Microsoft.Extensions.Configuration;
 
-
-namespace Domain.Models
+namespace DataAccess.DbConnection
 {
-    public class DbConnection
+    public class DbConnection: IDbConnectionProvider
     {
         private readonly IConfiguration _configuration;
 
@@ -21,8 +22,10 @@ namespace Domain.Models
 
         public IDbConnection CreateConnection()
         {
-            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            string connectionString = _configuration.GetConnectionString("sqliteConnectionString");
             return new SqlConnection(connectionString);
         }
+
+   
     }
 }

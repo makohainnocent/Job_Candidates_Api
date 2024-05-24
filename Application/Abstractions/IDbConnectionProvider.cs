@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace Application.Abstractions
 {
-    public interface IDbConnectionProvider
-    {
+  
         public interface IDbConnectionProvider
         {
             IDbConnection CreateConnection();
         }
-    }
+    
 }

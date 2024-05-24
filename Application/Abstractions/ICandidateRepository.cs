@@ -9,6 +9,10 @@ namespace Application.Abstractions
 {
     public interface ICandidateRepository
     {
-        Task<ICollection<Candidate>>
+        Task<ICollection<Candidate>> GetCandidates();
+        Task<Candidate> GetCandidate(int id);
+        Task<Candidate> CreateCandidate(Candidate candidate);
+        Task<Candidate> UpdateCandidate(string  updatedContent, int id);
+        Task DeleteCandidate(int id);
     }
 }
