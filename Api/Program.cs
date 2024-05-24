@@ -1,3 +1,4 @@
+using Api.Extensions;
 using Application.Abstractions;
 using DataAccess.DbConnection;
 using DataAccess.Repositories;
@@ -8,13 +9,9 @@ using SQLitePCL;
 Batteries.Init();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.RegisterServices();
 
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddSingleton<IDbConnectionProvider, DbConnection>();
-builder.Services.AddTransient<ICandidateRepository, CandidateRepository>();
 
 var app = builder.Build();
 
