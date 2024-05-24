@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Builder;
 
 namespace Api.EndPointDefinitions
 {
+    
     using Application.Abstractions;
     using Domain.Models;
+    using global::Api.Filters;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using System.Threading.Tasks;
@@ -20,7 +22,7 @@ namespace Api.EndPointDefinitions
                 var candidateGroup = app.MapGroup("/api/candidates");
 
                 candidateGroup.MapGet("/{id}", GetCandidateById).WithName("GetCandidateById");
-                candidateGroup.MapPost("/", CreateCandidate);
+                candidateGroup.MapPost("/", CreateCandidate).AddEndpointFilter<CandidateValidationFilter>();
             }
 
             private  async Task<IResult> GetCandidateById(ICandidateRepository candidateRepository, int id)

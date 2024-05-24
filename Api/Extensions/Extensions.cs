@@ -1,4 +1,5 @@
 ﻿using Api.Abstractions;
+using Api.Middlewares;
 using Application.Abstractions;
 using DataAccess.DbConnection;
 using DataAccess.Repositories;
@@ -29,6 +30,11 @@ namespace Api.Extensions
             {
                 endpoints.RegisterEndpoints(app);
             }
+        }
+
+        public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ExceptionHandlingMiddleware>();
         }
     }
 }
