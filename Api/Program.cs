@@ -8,12 +8,7 @@ Batteries.Init();
 var builder = WebApplication.CreateBuilder(args);
 builder.RegisterServices();
 
-
-
 var app = builder.Build();
-
-
-app.RegisterEndpointdefinitions();
 
 if (app.Environment.IsDevelopment())
 {
@@ -21,9 +16,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
-
+app.RegisterEndpointdefinitions();
 
 
 app.Run();

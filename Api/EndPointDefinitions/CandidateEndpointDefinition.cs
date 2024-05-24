@@ -1,25 +1,28 @@
 ﻿using Api.Abstractions;
 using Application.Abstractions;
 using Domain.Models;
+using Microsoft.AspNetCore.Builder;
 
 namespace Api.EndPointDefinitions
 {
-    public class CandidateEndpointDefinition:IEndpointDefinition
+    public class CandidateEndpointDefinition : IEndpointDefinition
     {
-       public  void RegisterEndpoints(WebApplication app)
+        public void RegisterEndpoints(WebApplication app)
         {
-            app.MapGet("/api/candidates/{id}", async (ICandidateRepository candidateRepository, int id) => {
+            var candidateGroup = app.MapGroup("/api/candidates");
+
+            candidateGroup.MapGet("/{id}", async (ICandidateRepository candidateRepository, int id) =>
+            {
                 var candidate = await candidateRepository.GetCandidate(id);
                 return candidate is not null ? Results.Ok(candidate) : Results.NotFound();
-
             }).WithName("GetCandidateById");
 
-            app.MapPost("/api/candidates", async (ICandidateRepository candidateRepository, Candidate candidate) =>
+            candidateGroup.MapPost("/", async (ICandidateRepository candidateRepository, Candidate candidate) =>
             {
                 var createdCandidate = await candidateRepository.CreateCandidate(candidate);
-                return Results.CreatedAtRoute("GetCandidateById", new { createdCandidate.Id }, createdCandidate);
-
+                return Results.CreatedAtRoute("GetCandidateById", new { id = createdCandidate.Id }, createdCandidate);
             });
         }
     }
 }
+
