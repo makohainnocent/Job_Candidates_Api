@@ -36,8 +36,8 @@ namespace Domain.Models
         [Url(ErrorMessage = "Invalid GitHub profile URL.")]
         public string? GitHubProfileUrl { get; set; } 
 
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
 
-        public DateTime LastUpdated { get; set; }
+        public DateTime? LastUpdated { get; set; }
     }
 }

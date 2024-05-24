@@ -21,9 +21,14 @@ namespace DataAccess.Repositories
         public async Task<Candidate> CreateCandidate(Candidate candidate)
         {
             const string sql = @"
-                INSERT INTO Candidates (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment)
-                VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment);
-                SELECT LAST_INSERT_ROWID();";
+        INSERT INTO Candidates 
+        (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment, Created, Updated)
+        VALUES 
+        (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment, @Created, @Updated);
+        SELECT LAST_INSERT_ROWID();";
+
+            candidate.DateCreated = DateTime.UtcNow;
+            candidate.LastUpdated = DateTime.UtcNow;
 
             using (var connection = _dbConnectionProvider.CreateConnection())
             {
@@ -32,6 +37,7 @@ namespace DataAccess.Repositories
                 return candidate;
             }
         }
+
 
         public async Task DeleteCandidate(int id)
         {
