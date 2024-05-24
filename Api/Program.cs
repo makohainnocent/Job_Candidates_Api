@@ -1,9 +1,6 @@
 using Api.Extensions;
 using Application.Abstractions;
-using DataAccess.DbConnection;
-using DataAccess.Repositories;
 using Domain.Models;
-using Microsoft.AspNetCore.Connections;
 using SQLitePCL;
 
 Batteries.Init();
