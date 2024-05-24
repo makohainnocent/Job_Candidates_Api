@@ -22,11 +22,12 @@ namespace DataAccess.Repositories
         {
             const string sql = @"
         INSERT INTO Candidates 
-        (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment, Created, Updated)
+        (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment, DateCreated, LastUpdated)
         VALUES 
-        (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment, @Created, @Updated);
+        (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment, @DateCreated, @LastUpdated);
         SELECT LAST_INSERT_ROWID();";
 
+            
             candidate.DateCreated = DateTime.UtcNow;
             candidate.LastUpdated = DateTime.UtcNow;
 
