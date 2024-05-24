@@ -12,7 +12,7 @@ namespace Application.Abstractions
         Task<ICollection<Candidate>> GetCandidates();
         Task<Candidate> GetCandidate(int id);
         Task<Candidate> CreateCandidate(Candidate candidate);
-        Task<Candidate> UpdateCandidate(string  updatedContent, int id);
+        Task<Candidate> UpdateCandidate(Candidate candidate, int id);
         Task DeleteCandidate(int id);
     }
 }

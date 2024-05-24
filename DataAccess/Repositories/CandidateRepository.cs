@@ -1,7 +1,11 @@
 ﻿using Application.Abstractions;
 using Domain.Models;
 using Dapper;
-
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
@@ -19,7 +23,7 @@ namespace DataAccess.Repositories
             const string sql = @"
                 INSERT INTO Candidates (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment)
                 VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment);
-                SELECT LAST_INSERT_ID();";
+                SELECT LAST_INSERT_ROWID();";
 
             using (var connection = _dbConnectionProvider.CreateConnection())
             {
@@ -55,34 +59,38 @@ namespace DataAccess.Repositories
 
             using (var connection = _dbConnectionProvider.CreateConnection())
             {
-                return (await connection.QueryAsync<Candidate>(sql)).ToList();
+                var candidates = await connection.QueryAsync<Candidate>(sql);
+                return candidates.ToList();
             }
         }
 
-        public async Task<Candidate> UpdateCandidate(Candidate candidate)
+        public async Task<Candidate> UpdateCandidate(Candidate candidate, int id)
         {
+           
             const string sql = @"
-                UPDATE Candidates 
-                SET FirstName = @FirstName, 
-                    LastName = @LastName, 
-                    Email = @Email, 
-                    PhoneNumber = @PhoneNumber, 
-                    PreferredCallTime = @PreferredCallTime, 
-                    LinkedInProfileUrl = @LinkedInProfileUrl, 
-                    GitHubProfileUrl = @GitHubProfileUrl, 
-                    FreeTextComment = @FreeTextComment
-                WHERE Id = @Id";
+        UPDATE Candidates 
+        SET FirstName = @FirstName, 
+            LastName = @LastName, 
+            Email = @Email, 
+            PhoneNumber = @PhoneNumber, 
+            PreferredCallTime = @PreferredCallTime, 
+            LinkedInProfileUrl = @LinkedInProfileUrl, 
+            GitHubProfileUrl = @GitHubProfileUrl, 
+            FreeTextComment = @FreeTextComment
+        WHERE Id = @Id";
 
+           
+            candidate.Id = id;
+
+            
             using (var connection = _dbConnectionProvider.CreateConnection())
             {
                 await connection.ExecuteAsync(sql, candidate);
-                return await GetCandidate(candidate.Id);
             }
+
+            
+            return await GetCandidate(id);
         }
 
-        public Task<Candidate> UpdateCandidate(string updatedContent, int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

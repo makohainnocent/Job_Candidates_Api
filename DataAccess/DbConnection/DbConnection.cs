@@ -1,17 +1,13 @@
 ﻿using Application.Abstractions;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Abstractions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Data.Sqlite;
+using System.IO;
 
 namespace DataAccess.DbConnection
 {
-    public class DbConnection: IDbConnectionProvider
+    public class DbConnection : IDbConnectionProvider
     {
         private readonly IConfiguration _configuration;
 
@@ -22,10 +18,25 @@ namespace DataAccess.DbConnection
 
         public IDbConnection CreateConnection()
         {
+           
             string connectionString = _configuration.GetConnectionString("sqliteConnectionString");
-            return new SqlConnection(connectionString);
-        }
 
-   
+            
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+            string relativePath = connectionString.Replace("Data Source=./", string.Empty).Replace("Data Source=", string.Empty);
+
+            
+            string fullPath = Path.Combine(baseDirectory, relativePath);
+
+            
+            string finalConnectionString = $"Data Source={fullPath}";
+
+            
+            Console.WriteLine($"Database Path: {fullPath}");
+
+           
+            return new SqliteConnection(finalConnectionString);
+        }
     }
 }
