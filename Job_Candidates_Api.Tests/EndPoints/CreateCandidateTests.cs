@@ -1,9 +1,11 @@
-﻿using System.Net.Http.Json;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Job_Candidates_Api.Tests.EndPoints
 {
@@ -19,7 +21,6 @@ namespace Job_Candidates_Api.Tests.EndPoints
         [Fact]
         public async Task CreateCandidate_ReturnsCreatedResponse()
         {
-            // Arrange
             var newCandidate = new Candidate
             {
                 FirstName = "Jane",
@@ -28,10 +29,8 @@ namespace Job_Candidates_Api.Tests.EndPoints
                 FreeTextComment = "Test Comment"
             };
 
-            // Act
             var response = await _client.PostAsJsonAsync("/api/candidates", newCandidate);
 
-            // Assert
             response.EnsureSuccessStatusCode();
             var createdCandidate = await response.Content.ReadFromJsonAsync<Candidate>();
             Assert.NotNull(createdCandidate);
@@ -40,5 +39,7 @@ namespace Job_Candidates_Api.Tests.EndPoints
             Assert.Equal(newCandidate.Email, createdCandidate.Email);
             Assert.Equal(newCandidate.FreeTextComment, createdCandidate.FreeTextComment);
         }
+
+       
     }
 }
