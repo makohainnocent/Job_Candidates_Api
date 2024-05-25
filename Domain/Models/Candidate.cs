@@ -28,13 +28,13 @@ namespace Domain.Models
         
         public string? PhoneNumber { get; set; } 
 
-        public string? PreferredCallTime { get; set; } 
+        public string? PreferredCallTime { get; set; }
 
-        [Url(ErrorMessage = "Invalid LinkedIn profile URL.")]
-        public string? LinkedInProfileUrl { get; set; } 
+        [Url(ErrorMessage = "Please enter a valid URL for the LinkedIn profile (e.g., https://www.linkedin.com/in/username).")]
+        public string? LinkedInProfileUrl { get; set; }
 
-        [Url(ErrorMessage = "Invalid GitHub profile URL.")]
-        public string? GitHubProfileUrl { get; set; } 
+        [Url(ErrorMessage = "Please enter a valid URL for the GitHub profile (e.g., https://github.com/username).")]
+        public string? GitHubProfileUrl { get; set; }
 
         public DateTime? DateCreated { get; set; }
 
