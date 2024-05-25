@@ -1,4 +1,5 @@
 ﻿using Api.Abstractions;
+using Api.Filters;
 using Api.Middlewares;
 using Application.Abstractions;
 using DataAccess.DbConnection;
@@ -16,6 +17,8 @@ namespace Api.Extensions
 
             builder.Services.AddSingleton<IDbConnectionProvider, DbConnection>();
             builder.Services.AddTransient<ICandidateRepository, CandidateRepository>();
+
+            builder.Services.AddScoped<CandidateValidationFilter>();
         }
 
         public static void RegisterEndpointdefinitions(this WebApplication app)
