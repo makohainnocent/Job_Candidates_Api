@@ -62,6 +62,7 @@ namespace DataAccess.Repositories
 
         public async Task<Candidate> GetCandidate(int id)
         {
+            throw new ArgumentException("The ID cannot be zero.");
             const string sql = "SELECT * FROM Candidates WHERE Id = @Id";
 
             using (var connection = _dbConnectionProvider.CreateConnection())

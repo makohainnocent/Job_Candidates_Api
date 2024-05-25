@@ -12,7 +12,8 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    app.UseExceptionHandlingMiddleware();
+    //app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -27,3 +28,4 @@ app.RegisterEndpointdefinitions();
 app.Run();
 
 
+public partial class Program { }
