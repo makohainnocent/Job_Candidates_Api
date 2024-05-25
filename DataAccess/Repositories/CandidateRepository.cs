@@ -20,33 +20,33 @@ namespace DataAccess.Repositories
 
         public async Task<Candidate> CreateCandidate(Candidate candidate)
         {
-
             const string selectSql = "SELECT * FROM Candidates WHERE Email = @Email";
             const string insertSql = @"
         INSERT INTO Candidates 
         (FirstName, LastName, Email, PhoneNumber, PreferredCallTime, LinkedInProfileUrl, GitHubProfileUrl, FreeTextComment, DateCreated)
         VALUES 
-        (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment, @DateCreated);";
+        (@FirstName, @LastName, @Email, @PhoneNumber, @PreferredCallTime, @LinkedInProfileUrl, @GitHubProfileUrl, @FreeTextComment, @DateCreated);
+        SELECT last_insert_rowid();"; 
 
+            candidate.DateCreated = DateTime.UtcNow;
             using (var connection = _dbConnectionProvider.CreateConnection())
             {
-                
                 var existingCandidate = await connection.QueryFirstOrDefaultAsync<Candidate>(selectSql, new { Email = candidate.Email });
 
                 if (existingCandidate != null)
                 {
-                   
                     return await UpdateCandidate(candidate, existingCandidate.Id);
                 }
                 else
                 {
-                   
                     candidate.DateCreated = DateTime.UtcNow;
-                    await connection.ExecuteAsync(insertSql, candidate);
+                    var newCandidateId = await connection.ExecuteScalarAsync<int>(insertSql, candidate);
+                    candidate.Id = newCandidateId;
                     return candidate;
                 }
             }
         }
+
 
 
 
@@ -62,7 +62,7 @@ namespace DataAccess.Repositories
 
         public async Task<Candidate> GetCandidate(int id)
         {
-            throw new ArgumentException("The ID cannot be zero.");
+           
             const string sql = "SELECT * FROM Candidates WHERE Id = @Id";
 
             using (var connection = _dbConnectionProvider.CreateConnection())
